@@ -2,6 +2,9 @@ package br.com.franca.hrworker.resources;
 
 import br.com.franca.hrworker.entities.Worker;
 import br.com.franca.hrworker.repositories.WorkerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +18,15 @@ import java.util.List;
 @RequestMapping(value = "/workers")
 public class WorkerResources {
 
+    private static Logger logger = LoggerFactory.getLogger(WorkerResources.class);
+
+    private Environment env;
+
     private WorkerRepository workerRepository;
 
     @Autowired
-    public WorkerResources(WorkerRepository workerRepository) {
+    public WorkerResources(Environment env, WorkerRepository workerRepository) {
+        this.env = env;
         this.workerRepository = workerRepository;
     }
 
@@ -32,6 +40,8 @@ public class WorkerResources {
 
     @GetMapping(value = "/findById/{id}")
     public ResponseEntity<Worker> findById(@PathVariable  Long id){
+
+        logger.info("Port:" + env.getProperty("local.server.port"));
 
         Worker worker = workerRepository.findById(id).get();
 
